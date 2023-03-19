@@ -35,8 +35,8 @@ class Barang extends Model
         // Query
         $query = DB::select('SELECT * FROM barang WHERE id = ?', [$id]);
 
-        // Return
-        return $query;
+        // Return the first row as an object
+        return count($query) ? $query[0] : null;
     }
 
     public function createBarang($data)

@@ -42,7 +42,7 @@ Route::prefix('gudang')->name('gudang.')->group(function () {
     Route::get('/barang/create', [StaffGudangController::class, 'createBarang'])->name('barang_create');
     Route::post('/barang/create', [StaffGudangController::class, 'storeBarang'])->name('barang_store');
     Route::get('/barang/edit/{id}', [StaffGudangController::class, 'editBarang'])->name('barang_edit');
-    Route::post('/barang/edit/{id}', [StaffGudangController::class, 'updateBarang'])->name('barang_update');
+    Route::put('/barang/edit/{id}', [StaffGudangController::class, 'updateBarang'])->name('barang_update');
     Route::get('/barang/delete/{id}', [StaffGudangController::class, 'deleteBarang'])->name('barang_delete');
 });
 

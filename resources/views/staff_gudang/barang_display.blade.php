@@ -7,10 +7,10 @@
     <div class="row row-cols-1 row-cols-md-5 g-4">
         @foreach ($data as $barang)
         <div class="col">
-            <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png" class="card-img-top" alt="...">
+            <div class="card bg-light card-container">
+                <img src="{{ asset('images/barang/' . $barang->gambar_barang) }}" class="card-img-top" alt="...">
                 <div class="card-header">
-                    Cakue
+                    {{$barang->nama_barang}}
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
@@ -30,8 +30,8 @@
                     </li>
                 </ul>
                 <div class="card-footer">
-                    <a href="#" class="card-link btn btn-primary">Edit</a>
-                    <a href="#" class="card-link btn btn-danger">Delete</a>
+                    <a href="{{ route('gudang.barang_edit', ['id' => $barang->id]) }}" class="card-link btn btn-primary">Edit</a>
+                    <a href="{{ route('gudang.barang_delete', ['id' => $barang->id]) }}" class="card-link btn btn-danger">Delete</a>
                 </div>
             </div>
         </div>
@@ -60,6 +60,18 @@
 
     .card-footer a {
         font-size: 14px;
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 225px;
+        object-fit: cover;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .card-container {
+        border-radius: 15px;
     }
 </style>
 @endpush

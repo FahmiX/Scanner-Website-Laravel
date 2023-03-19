@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class StaffGudangController extends Controller
 {
@@ -21,7 +23,7 @@ class StaffGudangController extends Controller
     {
         $barang = new Barang();
         $data = $barang->getAllBarang();
-        
+
         return view('staff_gudang.barang_display', compact('data'));
     }
 
@@ -46,11 +48,24 @@ class StaffGudangController extends Controller
             'harga_barang' => 'required',
             'stok_barang' => 'required',
             'deskripsi_barang' => 'required',
-            'gambar_barang' => 'required',
+            'gambar_barang' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         $barang = new Barang();
-        $barang->createBarang($request->all());
+        $barang->nama_barang = $request->nama_barang;
+        $barang->kode_barang = $request->kode_barang;
+        $barang->harga_barang = $request->harga_barang;
+        $barang->stok_barang = $request->stok_barang;
+        $barang->deskripsi_barang = $request->deskripsi_barang;
+
+        // Upload Gambar
+        $image = $request->file('gambar_barang');
+        $newImageName = date('YmdHis') . '-' . $image->getClientOriginalName();
+        $image->move(public_path('images/barang'), $newImageName);
+        $barang->gambar_barang = $newImageName;
+
+        // Save ke database
+        $barang->createBarang($barang->toArray());
 
         return redirect()->route('gudang.barang_display')->with('success', 'Barang berhasil ditambahkan');
     }
@@ -58,22 +73,49 @@ class StaffGudangController extends Controller
     public function editBarang($id)
     {
         $barang = new Barang();
-        $data = $barang->getABarang($id);
+        $barang = $barang->getABarang($id);
 
-        return view('staff_gudang.barang_edit', compact('data'));
+        return view('staff_gudang.barang_edit', compact('barang'));
     }
 
     public function updateBarang($id, Request $request)
     {
         $barang = new Barang();
-        $barang->updateBarang($request->all(), $id);
+        $oldBarang = $barang->getABarang($id);
+        $newBarang = $request->all();
 
-        return redirect()->route('gudang.barang_edit')->with('success', 'Barang berhasil diubah');
+        // Update gambar
+        if ($request->hasFile('gambar_barang')) {
+            // Upload New Image
+            $image = $request->file('gambar_barang');
+            $newImageName = date('YmdHis') . '-' . $image->getClientOriginalName();
+            $image->move(public_path('images/barang'), $newImageName);
+            $newBarang['gambar_barang'] = $newImageName;
+
+            // Delete Old Image
+            if (file_exists('images/barang/'.$oldBarang->gambar_barang)) {
+                unlink('images/barang/'.$oldBarang->gambar_barang);
+            }    
+        }
+        
+        // Update data
+        $barang->updateBarang($newBarang, $id);
+
+        return redirect()->route('gudang.barang_display')->with('success', 'Barang berhasil diubah');
     }
 
     public function deleteBarang($id)
     {
         $barang = new Barang();
+
+        // Delete gambar
+        $oldBarang = $barang->getABarang($id);
+        // dd($oldBarang);
+        if (file_exists('images/barang/'.$oldBarang->gambar_barang)) {
+            unlink('images/barang/'.$oldBarang->gambar_barang);
+        }
+
+        // Delete data
         $barang->deleteBarang($id);
 
         return redirect()->route('gudang.barang_display')->with('success', 'Barang berhasil dihapus');
