@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
+use App\Http\Controllers\QRCodeController;
 
 class StaffGudangController extends Controller
 {
@@ -30,9 +29,9 @@ class StaffGudangController extends Controller
     public function detailBarang($id)
     {
         $barang = new Barang();
-        $data = $barang->getABarang($id);
+        $barang = $barang->getABarang($id);
 
-        return view('staff_gudang.barang_detail', compact('data'));
+        return view('staff_gudang.barang_detail', compact('barang'));
     }
 
     public function createBarang()
@@ -64,6 +63,11 @@ class StaffGudangController extends Controller
         $image->move(public_path('images/barang'), $newImageName);
         $barang->gambar_barang = $newImageName;
 
+        // Generate QR Code
+        $qrcode = new QRCodeController();
+        $qrimage = $qrcode->generateQRCode($barang->kode_barang, $barang->nama_barang);
+        $barang->qrcode_barang = $qrimage;
+
         // Save ke database
         $barang->createBarang($barang->toArray());
 
@@ -93,11 +97,13 @@ class StaffGudangController extends Controller
             $newBarang['gambar_barang'] = $newImageName;
 
             // Delete Old Image
-            if (file_exists('images/barang/'.$oldBarang->gambar_barang)) {
-                unlink('images/barang/'.$oldBarang->gambar_barang);
-            }    
+            if (file_exists('images/barang/' . $oldBarang->gambar_barang)) {
+                unlink('images/barang/' . $oldBarang->gambar_barang);
+            }
+        } else {
+            $newBarang['gambar_barang'] = $oldBarang->gambar_barang;
         }
-        
+
         // Update data
         $barang->updateBarang($newBarang, $id);
 
@@ -110,14 +116,26 @@ class StaffGudangController extends Controller
 
         // Delete gambar
         $oldBarang = $barang->getABarang($id);
-        // dd($oldBarang);
-        if (file_exists('images/barang/'.$oldBarang->gambar_barang)) {
-            unlink('images/barang/'.$oldBarang->gambar_barang);
+
+        if (file_exists('images/barang/' . $oldBarang->gambar_barang)) {
+            unlink('images/barang/' . $oldBarang->gambar_barang);
+        }
+
+        if (file_exists('images/barang_qrcode/' . $oldBarang->qrcode_barang)) {
+            unlink('images/barang_qrcode/' . $oldBarang->qrcode_barang);
         }
 
         // Delete data
         $barang->deleteBarang($id);
 
         return redirect()->route('gudang.barang_display')->with('success', 'Barang berhasil dihapus');
+    }
+
+    public function searchBarang(Request $request)
+    {
+        $barang = new Barang();
+        $data = $barang->searchBarang($request->search);
+
+        return view('staff_gudang.barang_display', compact('data'));
     }
 }

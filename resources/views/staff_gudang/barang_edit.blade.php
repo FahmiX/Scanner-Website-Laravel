@@ -59,7 +59,7 @@
                         </div>
 
                         <div class="col-md-12 mb-2">
-                            <img id="preview-image-before-upload" src="{{isset($barang) ? asset('storage/app/public/images/barang'.$barang->gambar_barang) : 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Antu_insert-image.svg/1200px-Antu_insert-image.svg.png'}}" alt="preview image" class="image-preview">
+                            <img id="preview-image-before-upload" src="{{isset($barang) ? asset('images/barang/' . $barang->gambar_barang) : 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Antu_insert-image.svg/1200px-Antu_insert-image.svg.png'}}" alt="preview image" class="image-preview">
                         </div>
                     </div>
                 </div>

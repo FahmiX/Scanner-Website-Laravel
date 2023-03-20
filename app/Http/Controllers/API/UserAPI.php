@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -60,7 +60,7 @@ class UserAPI extends Controller
             'password' => 'required',
             'email' => 'required|email|unique:users',
         ]);
-    
+
         $user = new User;
         $user->username = $request->username;
         $user->password = bcrypt($request->password);
@@ -69,7 +69,7 @@ class UserAPI extends Controller
 
         // Assign role to user
         $user->assignRole('staff_kasir');
-    
+
         return response()->json(['success' => true, 'message' => 'Akun berhasil dibuat'], 200);
     }
 
@@ -130,7 +130,7 @@ class UserAPI extends Controller
             'password' => 'required',
             'email' => 'required|email|unique:users',
         ]);
-    
+
         $user = new User;
         $user->username = $request->username;
         $user->password = bcrypt($request->password);
@@ -139,7 +139,7 @@ class UserAPI extends Controller
 
         // Assign role to user
         $user->assignRole('staff_gudang');
-    
+
         return response()->json(['success' => true, 'message' => 'Akun berhasil dibuat'], 200);
     }
 

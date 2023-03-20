@@ -19,6 +19,7 @@ class Barang extends Model
         'stok_barang',
         'deskripsi_barang',
         'gambar_barang',
+        'qrcode_barang',
     ];
 
     public function getAllBarang()
@@ -42,13 +43,14 @@ class Barang extends Model
     public function createBarang($data)
     {
         // Query
-        $query = DB::insert('INSERT INTO barang (nama_barang, kode_barang, harga_barang, stok_barang, deskripsi_barang, gambar_barang) VALUES (?, ?, ?, ?, ?, ?)', [
+        $query = DB::insert('INSERT INTO barang (nama_barang, kode_barang, harga_barang, stok_barang, deskripsi_barang, gambar_barang, qrcode_barang) VALUES (?, ?, ?, ?, ?, ?, ?)', [
             $data['nama_barang'],
             $data['kode_barang'],
             $data['harga_barang'],
             $data['stok_barang'],
             $data['deskripsi_barang'],
             $data['gambar_barang'],
+            $data['qrcode_barang'],
         ]);
 
         // Return

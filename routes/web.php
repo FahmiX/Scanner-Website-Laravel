@@ -3,6 +3,7 @@
 use App\Http\Controllers\StaffKasirController;
 use App\Http\Controllers\StaffGudangController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\QrCodeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +35,7 @@ Route::get('/gudang/register', [UserController::class, 'GudangRegistrationForm']
 Route::post('/gudang/register', [UserController::class, 'GudangRegister'])->name('gudang.register.submit');
 Route::get('/gudang/logout', [UserController::class, 'GudangLogout'])->name('gudang.logout');
 
-// Staff Kasir Content
+// Staff Gudang Content
 Route::prefix('gudang')->name('gudang.')->group(function () {
     Route::get('/', [StaffGudangController::class, 'index'])->name('index');
     Route::get('/barang/display', [StaffGudangController::class, 'displayBarang'])->name('barang_display');
@@ -44,9 +45,12 @@ Route::prefix('gudang')->name('gudang.')->group(function () {
     Route::get('/barang/edit/{id}', [StaffGudangController::class, 'editBarang'])->name('barang_edit');
     Route::put('/barang/edit/{id}', [StaffGudangController::class, 'updateBarang'])->name('barang_update');
     Route::get('/barang/delete/{id}', [StaffGudangController::class, 'deleteBarang'])->name('barang_delete');
+    Route::get('/barang/search', [StaffGudangController::class, 'searchBarang'])->name('barang_search');
+    Route::get('/qrcode/generate', [QrCodeController::class, 'gudangQrCode'])->name('qrcode_generate');
+    Route::post('/qrcode/generate', [QrCodeController::class, 'generateQrCode'])->name('qrcode_generate.submit');
 });
 
-// Staff Gudang Content
+// Staff Kasir Content
 Route::prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/', [StaffKasirController::class, 'index'])->name('index');
 });
