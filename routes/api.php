@@ -25,6 +25,7 @@ use App\Http\Controllers\API\GudangAPI;
 Route::post('/kasir/login', [UserAPI::class, 'kasirLogin']);
 Route::post('/kasir/register', [UserAPI::class, 'kasirRegister']);
 Route::post('/kasir/logout', [UserAPI::class, 'kasirLogout']);
+Route::post('/kasir/qr', [UserAPI::class, 'transaksiKasir']);
 
 // Staff Gudang
 Route::post('/gudang/login', [UserAPI::class, 'gudangLogin']);
