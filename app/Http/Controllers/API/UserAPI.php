@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
 class UserAPI extends Controller
@@ -148,5 +150,30 @@ class UserAPI extends Controller
     {
         Auth::logout();
         return response()->json(['success' => true, 'message' => 'Logout berhasil'], 200);
+    }
+
+    public function transaksiKasir(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'qr_code' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'QR Code tidak boleh kosong'], 400);
+        }
+
+        try {
+            $kode_barang = $request->qr_code;
+            $barang = Barang::where('kode_barang', $kode_barang)->first();
+            if ($barang) {
+                $barang->stok_barang = $barang->stok_barang - 1;
+                $barang->save();
+            } else {
+                return response()->json(['success' => false, 'message' => 'Barang tidak ditemukan'], 400);
+            }
+            return response()->json(['success' => true, 'message' => 'Transaksi berhasil'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => 'Transaksi gagal', 'data' => $th], 400);
+        }
     }
 }
