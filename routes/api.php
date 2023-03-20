@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserAPI;
+use App\Http\Controllers\API\KasirAPI;
+use App\Http\Controllers\API\GudangAPI;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +30,5 @@ Route::post('/kasir/logout', [UserAPI::class, 'kasirLogout']);
 Route::post('/gudang/login', [UserAPI::class, 'gudangLogin']);
 Route::post('/gudang/register', [UserAPI::class, 'gudangRegister']);
 Route::post('/gudang/logout', [UserAPI::class, 'gudangLogout']);
+Route::post('/gudang/barang/tambah', [GudangAPI::class, 'tambahBarang']);
+Route::post('/gudang/barang/kurang', [GudangAPI::class, 'kurangBarang']);
